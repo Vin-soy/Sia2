@@ -25,6 +25,7 @@
             padding: 2rem 1rem;
             display: flex;
             position: fixed;
+            top: 0;
             left: 0;
             right: 0;
         }
