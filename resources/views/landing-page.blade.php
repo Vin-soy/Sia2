@@ -6,17 +6,22 @@
     <title>Document</title>
 
     <style>
+        @import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap");
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+        body {
+            font-family: "Open sans", sans-serif ;
+        }
 
         .nav_var {
-            background-color: red;
+            background-color: rgb(242, 237, 237);
             align-items: center;
             justify-content: space-between;
             margin: auto;
+            height: 70px;
             padding: 2rem 1rem;
             display: flex;
             position: fixed;
@@ -36,7 +41,7 @@
         
         .link a {
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 500;
             color: #333333;
         }
 
@@ -45,6 +50,25 @@
             display: flex;
             justify-content: end;
             gap: 1rem;
+        }
+        .nav_btns button {
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            outline: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .login_btn {
+            color: #333333;
+            border: 2px solid #767268;
+            background-color: transparent;
+        }
+
+        .register_btn {
+            color: white;
+            border: 2px solid #5d5fef;
+            background-color: #5d5fef;
         }
     </style>
 </head>
