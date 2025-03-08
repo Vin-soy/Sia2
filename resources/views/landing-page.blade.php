@@ -72,30 +72,39 @@
             background-color: #5d5fef;
         }
         .header {
-            background-color: #f8f8f8;
             margin-top: 80px;
+            display: flex;
+            padding: 2rem;
         }
-        .header_container {
-            display: grid;
-            grid-template-columns:
-            minmax(0, 1fr)
-            minmax(0, calc(var(--max-width) / 2))
-            minmax(0, 1fr);
+
+        .header_left {
+            padding: 4rem;
+            text-align: center;
+            align-items: center;
+            flex: 2;
         }
-        .header__content {
-            padding: 5rem 1rem;
-            grid-column: 2/3;
-        }
-        .header__content h1 {
-            margin-bottom: 1rem;
+        .header_left h1 {
             font-size: 4rem;
             font-weight: 600;
-            line-height: 5rem;
-            color: var(--text-dark);
+            color: #333333;
         }
-        .header__content p {
-            margin-bottom: 2rem;
-            color: var(--text-light);
+        .header_left p {
+            color: #767268;
+
+        }
+        .header_right {
+            flex-grow: 4;
+            flex: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header_image {
+            overflow: hidden;
+        }
+        .header_image img {
+            width: 100%;
+            object-fit: cover;
         }
     </style>
 </head>
@@ -118,20 +127,21 @@
     </nav>
 
     <header class="header">
-        <div class="header_container">
-            <div class="header_content">
-                <h1>A home built and unique with love and dreams</h1>
-                <p>
-                    Discover a curated selection of homes, apartments, and commercial
-                    properties, along with expert tips, market insights, and valuable
-                    resources to help you make the best real estate decisions. Join us
-                    today and let's unlock the doors to your dream property!
-                </p>
-                
-                <div class="header_image">
-                    <div class="img"></div>
-                </div>
-            </div>
+        <div class="header_left">
+          <h1>A home built and unique with love and dreams</h1>
+          <p>
+            Discover a curated selection of homes, apartments, and commercial
+            properties, along with expert tips, market insights, and valuable
+            resources to help you make the best real estate decisions. Join us
+            today and let's unlock the doors to your dream property!
+          </p>
+        </div>
+       
+        <div class="header_right">
+          <div class="header_image">
+            
+            <img src="assets/header.png" alt="header" />
+          </div>
         </div>
     </header>
 </body>
