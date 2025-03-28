@@ -52,18 +52,19 @@
             justify-content: end;
             gap: 1rem;
         }
-        .nav_btns button {
+        .nav_btns a {
             padding: 0.75rem 1.5rem;
             font-size: 1rem;
             outline: none;
             border-radius: 5px;
             cursor: pointer;
             transition: 0.3s;
+            text-decoration: none;
         }
         .login_btn {
-            color: #333333;
-            border: 2px solid #767268;
-            background-color: transparent;
+            color: white;
+            border: 2px solid #5d5fef;
+            background-color: #5d5fef;
         }
 
         .register_btn {
@@ -109,7 +110,7 @@
     </style>
 </head>
 <body>
-
+ 
     <nav>
         <div class="nav_var">
             <div class="nav_logo">PaUpa</div>
@@ -120,8 +121,8 @@
                 <li class="link"><a href="">Contact</a></li>
             </ul>
             <div class="nav_btns">
-                <button>Login</button>
-                <button>Register</button>
+                <a href="{{ route('login') }}" class="login_btn">Login</a>
+                <a href="{{ route('register') }}" class="register_btn">Register</a>
             </div>
         </div>
     </nav>
