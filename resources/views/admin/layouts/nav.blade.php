@@ -5,14 +5,19 @@
             <i class='bx bx-grid-alt'></i>
             <a href="">Home</a>
         </li>
-        <li>
-            <i class='bx bx-user'></i>
-            <a href="">Accounts</a>
-        </li>
-        <li>
-            <i class='bx bx-folder'></i>
-            <a href="">Listing</a>
-        </li>
+        <a href="{{ route('users.index') }}">
+            <li>
+                <i class='bx bx-user'></i>
+                Accounts
+            </li>
+        </a>
+
+        <a href="{{ route('rentals.index') }}">
+            <li>
+                <i class='bx bx-folder'></i>
+                Listing
+            </li>
+        </a>
         <li>
             <i class='bx bx-cart-alt'></i>
             <a href="">Reports</a>
