@@ -12,7 +12,7 @@
     bottom: 0;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-evenly;
 }
 .nav-list {
     display: flex;
@@ -47,8 +47,8 @@
     margin-left: 200px;
     margin-right: 2px;
     padding: 20px;
-    display: flex;
     gap: 30px;
+    overflow: a;
 }
 .container h2 {
     text-align: center;
@@ -56,7 +56,6 @@
 .container .tenant {
     flex: 1;
     border: 1px solid lightblue;
-    /* overflow: auto; */
 }
 
 .container .landlord {
@@ -89,4 +88,26 @@
 .left-side , .right-side{
     display: flex;
     align-items: center;
+}
+.user-container {
+    display: flex;
+    height: 70%;
+}
+.add-user{
+    margin-bottom: 40px;
+    width: 100%;
+    height: 150px;
+    border: 1px solid black;
+    padding: 20px;
+}
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.logo img {
+    width: 150px;
+    border-radius: 61px 61px 0px 61px;
+-webkit-border-radius: 61px 61px 0px 61px;
+-moz-border-radius: 61px 61px 0px 61px;
 }

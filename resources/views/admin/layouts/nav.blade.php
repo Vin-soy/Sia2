@@ -1,5 +1,7 @@
 <nav class="sidebar">
-    <div>Logo</div>
+    <div class="logo">
+        <img src="{{ asset('images/logo.png') }}" alt="">
+    </div>
     <ul class="nav-list">
         <li>
             <i class='bx bx-grid-alt'></i>
@@ -18,6 +20,7 @@
                 Listing
             </li>
         </a>
+        
         <li>
             <i class='bx bx-cart-alt'></i>
             <a href="">Reports</a>
@@ -27,5 +30,9 @@
             <a href="">Profile</a>
         </li>
     </ul>
-    <div>Log Out</div>
+    <form action="{{ route('logout') }}" method="POST">
+        @csrf
+        <button type="submit">Log Out</button>
+    </form>
+   
 </nav>

@@ -8,12 +8,30 @@ use Illuminate\Http\Request;
 class UserController extends Controller
 {
     public function index() {
-        $users = User::all();
-        return view('admin.users.index', compact('users'));
+        $tenants = User::whereHas('roles', function($query) {
+            $query->where('name', 'tenant');
+        })->get();
+    
+        $landlords = User::whereHas('roles', function($query) {
+            $query->where('name', 'landlord');
+        })->get();
+    
+        return view('admin.users.index', compact('tenants', 'landlords'));
     }
 
-    public function create() {
-        
+    public function store(Request $request) {
+        $request->validate([
+            'first_name' => 'required|string',
+            'email' => 'required|string',
+        ]);
+
+        User::create([
+            'name' => $request->first_name,
+            'email' => $request->email,
+            'password' => bcrypt('123456')
+        ]);
+
+        return redirect()->back();
     }
 
     public function show() {
@@ -28,7 +46,11 @@ class UserController extends Controller
         
     }
 
-    public function destroy() {
+    public function destroy($id) {
         
+        $user = User::findOrFail($id);
+        $user->delete();
+
+        return redirect()->route('users.index')->with('success', 'User deleted successfully.');
     }
 }
