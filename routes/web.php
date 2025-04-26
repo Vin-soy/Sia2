@@ -6,8 +6,11 @@ use App\Http\Controllers\RentalController;
 use App\Http\Controllers\ProfileController;
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::resource('users', UserController::class);
-    Route::resource('rentals', RentalController::class);
+    Route::resource('admin/users', UserController::class);
+    Route::resource('admin/rentals', RentalController::class);
+    Route::get('admin/profile', function () {
+        return view('admin.profile.index');
+    })->name('admin.profile');
 });
 
 Route::middleware(['auth', 'role:tenant'])->group(function () {
@@ -25,15 +28,15 @@ Route::middleware(['auth', 'role:tenant'])->group(function () {
 });
 
 Route::middleware(['auth', 'role:landlord'])->group(function () {
+
+    Route::post('landlord/account', [RentalController::class, 'store'])->name('landlord.account.store');
     Route::get('landlord/home', function () {
         return view('landlord.layouts.home');
     })->name('landlord.home');
 
-    Route::get('landlord/account', function () {
-        return view('landlord.layouts.account');
-    })->name('landlord.account');
+    Route::get('landlord/account', [RentalController::class, 'create'])->name('landlord.account');
 
-    Route::get('tenant/history', function () {
+    Route::get('landlord/history', function () {
         return view('landlord.layouts.history');
     })->name('landlord.history');
 });

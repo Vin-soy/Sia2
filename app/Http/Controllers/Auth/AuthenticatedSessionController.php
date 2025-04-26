@@ -25,19 +25,21 @@ class AuthenticatedSessionController extends Controller
     
      public function store(LoginRequest $request): RedirectResponse
      {
-         $request->authenticate();
-         $request->session()->regenerate();
-     
-         /** @var \App\Models\User $user */
-         $user = Auth::user();
-     
-         if ($user && $user->roles()->where('role_name', 'admin')->exists()) {
-             return redirect()->route('users.index');
-         } elseif ($user && $user->roles()->where('role_name', 'tenant')->exists()) {
-             return redirect()->route('rentals.index');
-         }
-     
-         return redirect()->intended('/');
+        $request->authenticate();
+        $request->session()->regenerate();
+    
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+    
+        if ($user && $user->roles()->where('role_name', 'admin')->exists()) {
+            return redirect()->route('users.index');
+        } elseif ($user && $user->roles()->where('role_name', 'tenant')->exists()) {
+            return redirect()->route('tenant.home');
+        } elseif ($user && $user->roles()->where('role_name', 'landlord')->exists()) {
+            return redirect()->route('landlord.home');
+        }
+    
+        return redirect()->intended('/');
      }
      
     

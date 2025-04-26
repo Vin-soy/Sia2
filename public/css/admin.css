@@ -48,7 +48,6 @@
     margin-right: 2px;
     padding: 20px;
     gap: 30px;
-    overflow: a;
 }
 .container h2 {
     text-align: center;
@@ -108,6 +107,51 @@
 .logo img {
     width: 150px;
     border-radius: 61px 61px 0px 61px;
--webkit-border-radius: 61px 61px 0px 61px;
--moz-border-radius: 61px 61px 0px 61px;
+    -webkit-border-radius: 61px 61px 0px 61px;
+    -moz-border-radius: 61px 61px 0px 61px;
+}
+.form-grid {
+    font-size: 13px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem; /* optional spacing */
+}
+
+.form-column {
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* spacing between input groups */
+}
+
+.form-group {
+    display: flex;
+    align-items: center;
+}
+
+.form-group label {
+    margin-bottom: 0.25rem;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="date"] {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    flex: 1;
+}
+
+button[type="submit"] {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: #2563eb; /* similar to Tailwind blue-600 */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button[type="submit"]:disabled {
+    background-color: #94a3b8; /* similar to Tailwind slate-400 */
+    cursor: not-allowed;
 }

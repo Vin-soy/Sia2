@@ -25,10 +25,12 @@
             <i class='bx bx-cart-alt'></i>
             <a href="">Reports</a>
         </li>
-        <li>
-            <i class='bx bx-user'></i>
-            <a href="">Profile</a>
-        </li>
+        <a href="{{ route('admin.profile') }}">
+            <li>
+                <i class='bx bx-user'></i>
+                Profile
+            </li>
+        </a>
     </ul>
     <form action="{{ route('logout') }}" method="POST">
         @csrf
