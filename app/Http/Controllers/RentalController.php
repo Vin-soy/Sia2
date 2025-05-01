@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\House;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RentalController extends Controller
 {
@@ -27,24 +28,25 @@ class RentalController extends Controller
         ]);
     
         // For testing - see what's coming in
-        dd($request->all());
+        // dd($request->all());
     
-        // $rental = new House(); // or Rental or Property - depending on your model
-        // $rental->landlord_id = $request->landlord_id;
-        // $rental->address = $request->address;
-        // $rental->description = $request->description;
-        // $rental->price = $request->price;
-        // $rental->number_of_rooms = $request->number_of_rooms;
-        // $rental->home_type = $request->home_type;
-        // $rental->status = $request->status;
-        // $rental->save();
+        $rental = new House(); // or Rental or Property - depending on your model
+        $rental->landlord_id = $request->landlord_id;
+        $rental->address = $request->address;
+        $rental->description = $request->description;
+        $rental->price = $request->price;
+        $rental->number_of_rooms = $request->number_of_rooms;
+        $rental->house_type = $request->home_type;
+        $rental->status = $request->status;
+        $rental->save();
     
-        // return redirect()->back()->with('success', 'Rental created successfully!');
+        return redirect()->back()->with('success', 'Rental created successfully!');
     }
     
     public function show($id) {
         // Show a specific rental property
-        return view('admin.listings.show', compact('id'));
+        $rental = House::findOrFail($id);
+        return view('landlord.rentals.showRental', compact('rental'));
     }
     public function edit($id) {
         // Edit a specific rental property
@@ -55,7 +57,20 @@ class RentalController extends Controller
         // Redirect or return a response
     }
     public function destroy($id) {
+        $rental = House::findOrFail($id);
+        $rental->delete();
+
+        return redirect()->route('landlord.history')->with('success', 'User deleted successfully.');
         // Delete a specific rental property
         // Redirect or return a response
+    }
+
+    public function landlordRentals() {
+        // Fetch rentals for a specific landlord
+        $landlordId = Auth::user();
+        // dd($landlordId);
+        $rentals = House::where('landlord_id', $landlordId->id)->get();
+
+        return view('landlord.layouts.history', compact('rentals'));
     }
 }

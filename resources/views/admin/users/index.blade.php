@@ -86,7 +86,6 @@
     
         <div class="tenant-col">
             @foreach ($tenants as $tenant)
-                
                 <div class="tenant-info">
                     <div class="left-side">
                         <img class="user-img" src="{{ asset('images/2.jpg') }}" alt="">

@@ -27,7 +27,7 @@
         
         .card-grid {
            display: grid;
-           grid-template-columns: repeat(4, 1fr);
+           grid-template-columns: repeat(2, 1fr);
            gap: 20px;
 
         }
@@ -47,7 +47,8 @@
             <div class="bottom">
                 <p>New Apartment</p>
                 <p>6391 Elin St. delina, Delaware 10299</p>
-                
+                <p>Rooms: </p>
+                <p>Price: </p>
             </div>
         </div>
 
@@ -56,33 +57,11 @@
                 <img src="{{ asset('assets/project-4.jpg') }}" alt="">
             </div>
             <div class="bottom">
-                <p>New Apartment</p>
-                <p>6391 Elin St. delina, Delaware 10299</p>
-                
-            </div>
-        </div>
-
-        <div class="home-card">
-            <div class="image">
-                <img src="{{ asset('assets/project-4.jpg') }}" alt="">
-            </div>
-            <div class="bottom">
-                <p>New Apartment</p>
-                <p>6391 Elin St. delina, Delaware 10299</p>
-                
-            </div>
-        </div>
-
-        <div class="home-card">
-            <div class="image">
-                <img src="{{ asset('assets/project-4.jpg') }}" alt="">
-            </div>
-            <div class="bottom">
-                <p>New Apartment</p>
-                <p>6391 Elin St. delina, Delaware 10299</p>
-                
+                <p>Description: New Apartment</p>
+                <p>Address: 6391 Elin St. delina, Delaware 10299</p>
+                <p>Rooms: </p>
+                <p>Price: </p>
             </div>
         </div>
     </div>
-    
 @endsection

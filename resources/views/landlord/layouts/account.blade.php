@@ -63,7 +63,14 @@
     @enderror
 
     <label for="home_type">Home Type</label>
-    <input type="text" name="home_type" id="home_type" placeholder="Enter home type" value="{{ old('home_type') }}">
+   
+    <select name="home_type" id="home_type">
+        <option value="available" {{ old('home_type') == 'available' ? 'selected' : '' }}>apartment</option>
+        <option value="house" {{ old('home_type') == 'house' ? 'selected' : '' }}>house</option>
+        <option value="studio" {{ old('home_type') == 'studio' ? 'selected' : '' }}>studio</option>
+        <option value="duplex" {{ old('home_type') == 'duplex' ? 'selected' : '' }}>duplex</option>
+        <option value="flat" {{ old('stathome_typeus') == 'flat' ? 'selected' : '' }}>flat</option>
+    </select>
     @error('home_type')
         <div class="error">{{ $message }}</div>
     @enderror
@@ -79,7 +86,6 @@
     @enderror
 
     <input type="hidden" name="landlord_id" value="{{ auth()->id() }}">
-
     <button type="submit">Submit</button>
 </form>
 

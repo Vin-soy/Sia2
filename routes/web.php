@@ -33,12 +33,9 @@ Route::middleware(['auth', 'role:landlord'])->group(function () {
     Route::get('landlord/home', function () {
         return view('landlord.layouts.home');
     })->name('landlord.home');
-
+    Route::resource('landlord/rentals', RentalController::class);
     Route::get('landlord/account', [RentalController::class, 'create'])->name('landlord.account');
-
-    Route::get('landlord/history', function () {
-        return view('landlord.layouts.history');
-    })->name('landlord.history');
+    Route::get('landlord/history', [RentalController::class, 'landlordRentals'])->name('landlord.history');
 });
 
 
