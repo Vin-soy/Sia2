@@ -37,7 +37,7 @@
         gap: 4px;
         margin: 5px
     }
-    .card-btn button, .card-btn a {
+    .card-btn button {
         text-decoration: none;
         padding: 10px 20px;
         border-radius: 5px;
@@ -51,24 +51,87 @@
 </style>
 <h2>My Rentals</h2>
 
-<table>
     <div class="card-grid">
-        <div class="home-card">
-            <div class="image">
-                <img src="{{ asset('assets/project-4.jpg') }}" alt="">
+            <div class="home-card">
+                <div class="image">
+                    <img src="{{ asset('assets/project-1.jpg') }}" alt="Modern Apartment">
+                </div>
+                <div class="bottom">
+                    <p class="title">Modern Apartment</p>
+                    <p class="address">123 Main St, Downtown, Cityville</p>
+                    <p class="rooms">Rooms: 2</p>
+                    <p class="price">Price: $1,200/month</p>
+                </div>
+                <div class="card-btn">
+                    <button type="submit" >View</button>
+                    <button type="submit">Delete</button>
+                </div>
             </div>
-            <div class="bottom">
-                <p>New Apartment</p>
-                <p>6391 Elin St. delina, Delaware 10299</p>
-                <p>Rooms: </p>
-                <p>Price: </p>
-                
+        
+            <div class="home-card">
+                <div class="image">
+                    <img src="{{ asset('assets/project-2.jpg') }}" alt="Cozy Cottage">
+                </div>
+                <div class="bottom">
+                    <p class="title">Cozy Cottage</p>
+                    <p class="address">456 Oak Rd, Greenfield</p>
+                    <p class="rooms">Rooms: 3</p>
+                    <p class="price">Price: $950/month</p>
+                </div>
+                <div class="card-btn">
+                    <button type="submit" >View</button>
+                    <button type="submit">Delete</button>
+                </div>
             </div>
-            <div class="card-btn">
-                <a href="">View</a>
-                <a href="">Delete</a>
+        
+            <div class="home-card">
+                <div class="image">
+                    <img src="{{ asset('assets/project-3.jpg') }}" alt="Luxury Villa">
+                </div>
+                <div class="bottom">
+                    <p class="title">Luxury Villa</p>
+                    <p class="address">789 Palm Blvd, Sunset Beach</p>
+                    <p class="rooms">Rooms: 5</p>
+                    <p class="price">Price: $3,500/month</p>
+                </div>
+                <div class="card-btn">
+                    <button type="submit" >View</button>
+                    <button type="submit">Delete</button>
+                </div>
             </div>
-        </div>
+        
+            <div class="home-card">
+                <div class="image">
+                    <img src="{{ asset('assets/project-4.jpg') }}" alt="Urban Loft">
+                </div>
+                <div class="bottom">
+                    <p class="title">Urban Loft</p>
+                    <p class="address">101 City Plaza, Metro City</p>
+                    <p class="rooms">Rooms: 1</p>
+                    <p class="price">Price: $1,500/month</p>
+                </div>
+                <div class="card-btn">
+                    <button type="submit" >View</button>
+                    <button type="submit">Delete</button>
+                </div>
+            </div>
+        
+            <div class="home-card">
+                <div class="image">
+                    <img src="{{ asset('assets/project-5.jpg') }}" alt="Family Home">
+                </div>
+                <div class="bottom">
+                    <p class="title">Family Home</p>
+                    <p class="address">202 Maple Ln, Suburbia</p>
+                    <p class="rooms">Rooms: 4</p>
+                    <p class="price">Price: $2,000/month</p>
+                </div>
+                <div class="card-btn">
+                    <button type="submit" >View</button>
+                    <button type="submit">Delete</button>
+                </div>
+            </div>
+        
         @foreach($rentals as $rental)
         <div class="home-card">
             <div class="image">
@@ -94,27 +157,4 @@
         </div>
         @endforeach
     </div>
-    <thead>
-        <tr>
-            <th>Address</th>
-            <th>Price</th>
-            <th>Rooms</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody>
-        @forelse($rentals as $rental)
-            <tr>
-                <td>{{ $rental->address }}</td>
-                <td>${{ number_format($rental->price, 2) }}</td>
-                <td>{{ $rental->number_of_rooms }}</td>
-                <td>{{ ucfirst($rental->status) }}</td>
-            </tr>
-        @empty
-            <tr>
-                <td colspan="4">You have no rentals yet.</td>
-            </tr>
-        @endforelse
-    </tbody>
-</table>
 @endsection

@@ -14,6 +14,22 @@ class ProfileController extends Controller
     /**
      * Display the user's profile form.
      */
+    public function index(){
+        $user = Auth::user();
+        $roleName = $user->roles->pluck('role_name')->first();
+
+        switch ($roleName) {
+            case 'tenant':
+                return view('tenant.layouts.profile', compact('user'));
+            case 'admin':
+                return view('admin.profile.index', compact('user'));
+            case 'landlord':
+                return view('landlord.layouts.profile', compact('user'));
+            default:
+            abort(403, 'Unauthorized role.');
+        }
+    }
+
     public function edit(Request $request): View
     {
         return view('profile.edit', [

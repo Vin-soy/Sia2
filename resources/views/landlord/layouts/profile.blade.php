@@ -1,4 +1,4 @@
-@extends('admin.dashboard')
+@extends('landlord.dashboard')
 
 @section('content')
 <style>
@@ -112,11 +112,11 @@
                 </div>
                 <div>
                     <label for="name2">Contact:</label>
-                    <input type="text" id="name2" name="name" value="{{ $user->info->contact_number ?? 'Contact number not set'}}" disabled>
+                    <input type="text" id="name2" name="name" value="{{ $user->info->contact_number }}" disabled>
                 </div>
                 <div>
                     <label for="name3">Birthday:</label>
-                    <input type="text" id="name3" name="name" value="{{ $user->info->birth_date ?? 'Contact number not set'}}" disabled>
+                    <input type="text" id="name3" name="name" value="{{ $user->info->birth_date }}" disabled>
                 </div>
                 <div>
                     <label for="name4">Created at:</label>

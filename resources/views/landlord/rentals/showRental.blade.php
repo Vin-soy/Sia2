@@ -176,6 +176,5 @@
                 updateSlidePosition();
             });
         });
-
     </script>
 @endsection

@@ -4,13 +4,15 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RentalController;
 use App\Http\Controllers\ProfileController;
+Route::get('/', function () {
+    return view('landing-page');
+});
+
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('admin/users', UserController::class);
     Route::resource('admin/rentals', RentalController::class);
-    Route::get('admin/profile', function () {
-        return view('admin.profile.index');
-    })->name('admin.profile');
+    Route::get('admin/profile', [ProfileController::class, 'index'])->name('admin.profile');
 });
 
 Route::middleware(['auth', 'role:tenant'])->group(function () {
@@ -36,17 +38,11 @@ Route::middleware(['auth', 'role:landlord'])->group(function () {
     Route::resource('landlord/rentals', RentalController::class);
     Route::get('landlord/account', [RentalController::class, 'create'])->name('landlord.account');
     Route::get('landlord/history', [RentalController::class, 'landlordRentals'])->name('landlord.history');
+    Route::get('landlord/profile',[ProfileController::class, 'index'])->name('landlord.profile');
 });
 
 
 
-Route::get('/', function () {
-    return view('landing-page');
-});
-
-Route::get('/home', function () {
-    return view('admin.index');
-})->name('home');
 
 
 Route::get('/dashboard', function () {

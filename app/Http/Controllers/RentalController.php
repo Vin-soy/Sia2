@@ -9,7 +9,19 @@ use Illuminate\Support\Facades\Auth;
 class RentalController extends Controller
 {
     public function index() {
-        return view('admin.listings.index');
+        $user = Auth::user();
+        $roleName = $user->roles->pluck('role_name')->first();
+
+        switch ($roleName) {
+            case 'tenant':
+                return view('tenant.layouts.profile', compact('user'));
+            case 'admin':
+                return view('admin.listings.index', compact('user'));
+            case 'landlord':
+                return view('landlord.rentals.showRental', compact('user'));
+            default:
+            abort(403, 'Unauthorized role.');
+        }
     }
 
     public function create() {

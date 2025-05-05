@@ -20,11 +20,13 @@
                 <p>History</p>
             </li>
         </a>
-       
-        <li>
-            <i class='bx bx-user'></i>
-            <p>Profile</p>
-        </li>
+        
+        <a href="{{ route('landlord.profile') }}">
+            <li>
+                <i class='bx bx-user'></i>
+                <p>Profile</p>
+            </li>
+        </a>
     </ul>
     <form action="{{ route('logout') }}" method="POST">
         @csrf
