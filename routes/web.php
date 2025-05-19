@@ -24,9 +24,11 @@ Route::middleware(['auth', 'role:tenant'])->group(function () {
         return view('tenant.layouts.account');
     })->name('tenant.account');
 
-    Route::get('tenant/history', function () {
-        return view('tenant.layouts.history');
-    })->name('tenant.history');
+    Route::post('/rental/apply', [RentalController::class, 'apply'])->name('rental.apply');
+
+    Route::get('tenant/rental/{id}', [RentalController::class, 'show'])->name('tenant.rental.show');
+    Route::get('tenant/profile',[ProfileController::class, 'index'])->name('tenant.profile');
+    Route::get('tenant/history', [RentalController::class, 'index'])->name('tenant.history');
 });
 
 Route::middleware(['auth', 'role:landlord'])->group(function () {
@@ -35,7 +37,7 @@ Route::middleware(['auth', 'role:landlord'])->group(function () {
     Route::get('landlord/home', function () {
         return view('landlord.layouts.home');
     })->name('landlord.home');
-    Route::resource('landlord/rentals', RentalController::class);
+    Route::resource('landlord/rentals', RentalController::class)->except('index');
     Route::get('landlord/account', [RentalController::class, 'create'])->name('landlord.account');
     Route::get('landlord/history', [RentalController::class, 'landlordRentals'])->name('landlord.history');
     Route::get('landlord/profile',[ProfileController::class, 'index'])->name('landlord.profile');

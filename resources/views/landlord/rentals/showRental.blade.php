@@ -3,26 +3,19 @@
 @section('content')
 
 <style>
-    * {
-        padding: 0;
-        margin: 0;
-        box-sizing: border-box;
-        font-family: 'Poppins', sans-serif;
-    } 
+    
    .home-container {
-        border: 1px solid red;
+        height: 100%;
+        width: 100%;
         display: grid;
-        grid-template-columns: 1fr 2fr;
+        grid-template-columns: 300px 1fr;
     }   
     .home-left {
         background-color: #f0f0f0;
-        height: 80%;
+        height: 100%;
     }
     .home-right {
-        height: autofit;
-        overflow: hidden;
         height: 100%;
-        background-color: #e0e0e0;
     }
     
     .home-left .home-details {
@@ -53,36 +46,36 @@
         color: #555;
     }
 
-    .home-right {
-        width: 100%;
-        margin: 0 auto;
-        position: relative;
-        height: fit-content;
-    }
-
     .carousel {
+        margin: 10px;
         display: flex;
         flex-direction: column;
         align-items: center;
         position: relative;
         width: 100%;
+        height: 100%;
         overflow: hidden;
     }
 
     .carousel-slides {
+        width: 100%;
+        height: 100%;
         display: flex;
         transition: transform 0.5s ease;
     }
 
     .carousel-slide {
-        min-width: 100%;
-        flex: 0 0 auto;
-        overflow: hidden;
+        flex: 0 0 100%; /* Each slide takes 100% of the carousel width */
+        height: 100%;   /* Match the carousel height */
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .carousel-slide img {
+        height: 100%;
         width: 100%;
-        object-fit: cover;
+        object-fit: contain;
     }
 
     button.prev,
@@ -96,6 +89,7 @@
         border: none;
         cursor: pointer;
         z-index: 1;
+        top: 50%
     }
 
     button.prev {
@@ -113,13 +107,17 @@
     .home-left .img img {
         width: 100%;
         height: 100%;
-        object-fit: contain;
+        object-fit: cover;
     }
 </style>
 <div class="home-container">
     <div class="home-left">
         <div class="img">
-            <img src="{{ asset('assets/project-6.jpg') }}" alt="">
+            @if($rental->images->isNotEmpty())
+                <img src="{{ asset('storage/' . $rental->images->first()->image_url) }}" alt="Main House Image">
+            @else
+                <img src="{{ asset('images/placeholder.jpg') }}" alt="Placeholder Image">
+            @endif
         </div>
         <div class="home-details">
             <h2>Property Details</h2>
@@ -131,50 +129,59 @@
             <p><span class="label">Status:</span> {{ $rental->status }}</p>
         </div>
     </div>
-    <div class="home-right">
-        <div class="carousel">
-            <div class="carousel-slides">
-                <div class="carousel-slide">
-                    <img src="{{ asset('assets/project-1.jpg') }}" alt="Image 1">
-                </div>
-                <div class="carousel-slide">
-                    <img src="{{ asset('assets/project-2.jpg') }}" alt="Image 2">
-                </div>
-                <div class="carousel-slide">
-                    <img src="{{ asset('assets/project-3.jpg') }}" alt="Image 3">
-                </div>
-                <div class="carousel-slide">
-                    <img src="{{ asset('assets/project-4.jpg') }}" alt="Image 4">
-                </div>
-                <div class="carousel-slide">
-                    <img src="{{ asset('assets/project-5.jpg') }}" alt="Image 5">
-                </div>
+    <div class="carousel">
+        <div class="carousel-slides">
+            @if($rental->images->count() > 1)
+                @foreach($rental->images->slice(1) as $image)
+                    <div class="carousel-slide">
+                        <img src="{{ asset('storage/' . $image->image_url) }}" alt="House Image">
+                    </div>
+                @endforeach
+            @else
+                <p>No additional images available.</p>
+            @endif
+            {{-- <div class="carousel-slide">
+                <img src="https://media.istockphoto.com/id/485371557/photo/twilight-at-spirit-island.jpg?s=612x612&w=0&k=20&c=FSGliJ4EKFP70Yjpzso0HfRR4WwflC6GKfl4F3Hj7fk=" alt="Image 1">
             </div>
-            <button class="prev">&#10094;</button>
-            <button class="next">&#10095;</button>
+            <div class="carousel-slide">
+                <img src="{{ asset('assets/project-2.jpg') }}" alt="Image 2">
+            </div>
+            <div class="carousel-slide">
+                <img src="{{ asset('assets/project-3.jpg') }}" alt="Image 3">
+            </div>
+            <div class="carousel-slide">
+                <img src="{{ asset('assets/project-4.jpg') }}" alt="Image 4">
+            </div>
+            <div class="carousel-slide">
+                <img src="{{ asset('assets/project-5.jpg') }}" alt="Image 5">
+            </div> --}}
         </div>
+        <button class="prev">&#10094;</button>
+        <button class="next">&#10095;</button>
     </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const slides = document.querySelectorAll('.carousel-slide');
-            const prevButton = document.querySelector('.prev');
-            const nextButton = document.querySelector('.next');
-            let currentIndex = 0;
 
-            function updateSlidePosition() {
-                const offset = -currentIndex * 100;
-                document.querySelector('.carousel-slides').style.transform = `translateX(${offset}%)`;
-            }
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const slides = document.querySelectorAll('.carousel-slide');
+        const prevButton = document.querySelector('.prev');
+        const nextButton = document.querySelector('.next');
+        let currentIndex = 0;
 
-            prevButton.addEventListener('click', function () {
-                currentIndex = (currentIndex === 0) ? slides.length - 1 : currentIndex - 1;
-                updateSlidePosition();
-            });
+        function updateSlidePosition() {
+            const offset = -currentIndex * 100;
+            document.querySelector('.carousel-slides').style.transform = `translateX(${offset}%)`;
+        }
 
-            nextButton.addEventListener('click', function () {
-                currentIndex = (currentIndex === slides.length - 1) ? 0 : currentIndex + 1;
-                updateSlidePosition();
-            });
+        prevButton.addEventListener('click', function () {
+            currentIndex = (currentIndex === 0) ? slides.length - 1 : currentIndex - 1;
+            updateSlidePosition();
         });
-    </script>
+
+        nextButton.addEventListener('click', function () {
+            currentIndex = (currentIndex === slides.length - 1) ? 0 : currentIndex + 1;
+            updateSlidePosition();
+        });
+    });
+</script>
 @endsection

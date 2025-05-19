@@ -1,5 +1,7 @@
 <nav class="sidebar">
-    <div>Logo</div>
+    <div class="logo">
+        <img src="{{ asset('images/logo.png') }}" alt="">
+    </div>
     <ul class="nav-list">
         <a href="{{ route('landlord.home') }}">
             <li>
@@ -30,7 +32,7 @@
     </ul>
     <form action="{{ route('logout') }}" method="POST">
         @csrf
-        <button type="submit">Log Out</button>
+        <button class="logout_btn"type="submit">Log Out</button>
     </form>
    
 </nav>
