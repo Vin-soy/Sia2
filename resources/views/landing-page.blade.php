@@ -63,14 +63,12 @@
         }
         .login_btn {
             color: white;
-            border: 2px solid #5d5fef;
-            background-color: #5d5fef;
+            background-color: black;
         }
 
         .register_btn {
             color: white;
-            border: 2px solid #5d5fef;
-            background-color: #5d5fef;
+            background-color: black;
         }
         .header {
             margin-top: 80px;
@@ -106,6 +104,7 @@
         .header_image img {
             width: 100%;
             object-fit: cover;
+            border-radius: 20px;
         }
     </style>
 </head>
