@@ -19,13 +19,23 @@
             <div class="team-grid">
                 <div class="team-member">
                     <img src="{{ asset('images/team1.jpg') }}" alt="Team Member">
-                    <h3>John Doe</h3>
-                    <p>Founder & CEO</p>
+                    <h3>Prince Erickson M. Sanado</h3>
+                    <p>Programmer</p>
                 </div>
                 <div class="team-member">
                     <img src="{{ asset('images/team2.jpg') }}" alt="Team Member">
-                    <h3>Jane Smith</h3>
-                    <p>Head of Sales</p>
+                    <h3>Daryl S. Lamay</h3>
+                    <p>Programmer</p>
+                </div>
+                <div class="team-member">
+                    <img src="{{ asset('images/team3.jpg') }}" alt="Team Member">
+                    <h3>Mel Duo</h3>
+                    <p>Designer</p>
+                </div>
+                <div class="team-member">
+                    <img src="{{ asset('images/team4.jpg') }}" alt="Team Member">
+                    <h3>Arvin Jay B. Lazan</h3>
+                    <p>Designer</p>
                 </div>
             </div>
         </div>
