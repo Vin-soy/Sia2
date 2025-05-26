@@ -1,5 +1,7 @@
 <nav class="sidebar">
-    <div>Logo</div>
+    <div class="logo">
+        <img src="{{ asset('images/logo.png') }}" alt="">
+    </div>
     <ul class="nav-list">
         <a href="{{ route('tenant.home') }}">
             <li>
@@ -20,15 +22,15 @@
                 <p>History</p>
             </li>
         </a>
-       
-        <li>
-            <i class='bx bx-user'></i>
-            <p>Profile</p>
-        </li>
+        <a href="{{ route('tenant.profile') }}">
+            <li>
+                <i class='bx bx-user'></i>
+                <p>Profile</p>
+            </li>
+        </a>
     </ul>
     <form action="{{ route('logout') }}" method="POST">
         @csrf
-        <button type="submit">Log Out</button>
+        <button class="logout_btn" type="submit">Log Out</button>
     </form>
-   
 </nav>

@@ -36,5 +36,4 @@
         @csrf
         <button type="submit">Log Out</button>
     </form>
-   
 </nav>

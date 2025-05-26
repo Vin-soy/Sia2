@@ -3,7 +3,7 @@
 @section('content')
  <h1>Account</h1>
  <style>
-    .form {
+     .form {
         display: flex;
         flex-direction: column;
         width: 300px;
@@ -14,7 +14,9 @@
         margin-bottom: 5px;
     }
 
-    .form input {
+    .form input,
+    .form select,
+    .form textarea {
         margin-bottom: 15px;
         padding: 10px;
         border-radius: 5px;
@@ -33,9 +35,39 @@
     .form button:hover {
         background-color: #0056b3;
     }
+
+    .error {
+        color: red;
+        font-size: 0.9em;
+        margin-bottom: 10px;
+    }
+
+    #image-preview {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    #image-preview img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .add-btn {
+        margin-bottom: 15px;
+        background-color: #28a745;
+    }
+
+    .add-btn:hover {
+        background-color: #218838;
+    }
  </style>
 
-<form action="{{ route('landlord.account.store') }}" class="form" method="POST">
+<form action="{{ route('landlord.account.store') }}" class="form" method="POST" enctype="multipart/form-data">
     @csrf
 
     <label for="address">Address</label>
@@ -84,10 +116,61 @@
     @error('status')
         <div class="error">{{ $message }}</div>
     @enderror
+      <label for="images">Upload Images</label>
+
+    <div id="image-fields">
+        <input type="file" name="images[]" class="image-input" accept="image/*">
+    </div>
+
+    <button type="button" class="add-btn" onclick="addImageInput()">+ Add More Images</button>
+
+    <div id="image-preview"></div>
+
+    @error('images')
+        <div class="error">{{ $message }}</div>
+    @enderror
+    @error('images.*')
+        <div class="error">{{ $message }}</div>
+    @enderror
 
     <input type="hidden" name="landlord_id" value="{{ auth()->id() }}">
     <button type="submit">Submit</button>
 </form>
+<script>
+    const imageFields = document.getElementById('image-fields');
+    const previewContainer = document.getElementById('image-preview');
 
+    function addImageInput() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.name = 'images[]';
+        input.accept = 'image/*';
+        input.classList.add('image-input');
+        input.style.marginBottom = '15px';
 
+        input.addEventListener('change', handlePreview);
+        imageFields.appendChild(input);
+    }
+
+    function handlePreview(event) {
+        const files = event.target.files;
+
+        Array.from(files).forEach(file => {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                previewContainer.appendChild(img);
+            };
+
+            reader.readAsDataURL(file);
+        });
+    }
+
+    // Initial image input preview binding
+    document.querySelectorAll('.image-input').forEach(input => {
+        input.addEventListener('change', handlePreview);
+    });
+</script>
 @endsection

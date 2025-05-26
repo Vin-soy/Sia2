@@ -21,4 +21,9 @@ class House extends Model
     {
         return $this->belongsTo(User::class, 'landlord_id');
     }
+
+    public function images()
+    {
+        return $this->hasMany(HouseImage::class)->orderBy('image_order');
+    }
 }

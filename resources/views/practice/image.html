@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image</title>
+    <style>
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .carousel {
+            position: relative;
+            overflow: hidden;
+            width: 80%;
+            height: 500px;
+            background-color: #e0e0e0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .carousel-slides {
+            display: flex;
+            height: 100%;
+            width: 100%;
+        }
+        .carousel-slide{
+            flex: 0 0 100%; /* Each slide takes 100% of the carousel width */
+            height: 100%;   /* Match the carousel height */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        button.prev,
+        button.next {
+            position: absolute;
+            top: 30%;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            font-size: 2rem;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            z-index: 1;
+        }
+
+        button.prev{
+            top: 50%;
+        }
+        button.next{
+            top: 50%;
+            right: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- <div class="carousel">
+            <img src="img/project-1.jpg" alt="">
+        </div> -->
+  
+        <div class="carousel">
+            <div class="carousel-slides">
+                <div class="carousel-slide">
+                    <img src="img/project-1.jpg" alt="Image 1">
+                </div>
+                <div class="carousel-slide">
+                    <img src="img/project-2.jpg" alt="Image 1">
+                </div>
+                <div class="carousel-slide">
+                    <img src="img/project-3.jpg" alt="Image 1">
+                </div>
+             </div>
+            <button class="prev">&#10094;</button>
+            <button class="next">&#10095;</button>
+        </div>
+        
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const slides = document.querySelectorAll('.carousel-slide');
+            const prevButton = document.querySelector('.prev');
+            const nextButton = document.querySelector('.next');
+            let currentIndex = 0;
+
+            function updateSlidePosition() {
+                const offset = -currentIndex * 100;
+                document.querySelector('.carousel-slides').style.transform = `translateX(${offset}%)`;
+            }
+
+            prevButton.addEventListener('click', function () {
+                currentIndex = (currentIndex === 0) ? slides.length - 1 : currentIndex - 1;
+                updateSlidePosition();
+            });
+
+            nextButton.addEventListener('click', function () {
+                currentIndex = (currentIndex === slides.length - 1) ? 0 : currentIndex + 1;
+                updateSlidePosition();
+            });
+        });
+    </script>
+</body>
+</html>
