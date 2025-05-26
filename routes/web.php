@@ -4,10 +4,12 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RentalController;
 use App\Http\Controllers\ProfileController;
-Route::get('/', function () {
-    return view('landing-page');
-});
+use App\Http\Controllers\DashboardController;
 
+Route::get('/', [DashboardController::class, 'home'])->name('home');
+Route::get('/about', [DashboardController::class, 'about'])->name('about');
+Route::get('/sample', [DashboardController::class, 'sample'])->name('sample');
+Route::get('/contact', [DashboardController::class, 'contact'])->name('contact');
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('admin/users', UserController::class);

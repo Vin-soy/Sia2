@@ -32,6 +32,13 @@
 
         .nav_logo{
             flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav_logo img {
+            height: 40px;
+            width: auto;
         }
 
         .nav_links{
@@ -112,12 +119,14 @@
  
     <nav>
         <div class="nav_var">
-            <div class="nav_logo">PaUpa</div>
+            <div class="nav_logo">
+                <img src="{{ asset('images/logo.png') }}" alt="PaUpa Logo">
+            </div>
             <ul class="nav_links">
                 <li class="link"><a href="">Home</a></li>
                 <li class="link"><a href="">About</a></li>
                 <li class="link"><a href="">Sample</a></li>
-                <li class="link"><a href="">Contact</a></li>
+                <li class="link"><a href="">Contact</a></li>    
             </ul>
             <div class="nav_btns">
                 <a href="{{ route('login') }}" class="login_btn">Login</a>
