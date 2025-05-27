@@ -32,8 +32,8 @@
         @for ($i = 1; $i <= 6; $i++)
         <div class="property-card">
             <div class="property-image">
-                <img src="{{ asset('assets/property' . $i . '.jpg') }}" alt="Property">
-                <span class="property-tag">For Sale</span>
+                <img src="{{ asset('assets/project-' . $i . '.jpg') }}" alt="Property">
+                <span class="property-tag">For Rent</span>
             </div>
             <div class="property-info">
                 <h3>Beautiful Home in City Center</h3>

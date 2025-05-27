@@ -11,10 +11,10 @@ class House extends Model
     protected $fillable = [
         'landlord_id',
         'address',
-        'decription',
+        'description',
         'price',
         'number_of_rooms',
-        'home_type',
+        'house_type',
         'status',
     ];
     public function landlord()

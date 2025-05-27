@@ -209,14 +209,15 @@
             }
 
             .form-group {
-                margin-bottom: 1.5rem;
+                margin-bottom: 1rem;
             }
 
             .form-group label {
                 display: block;
-                margin-bottom: 0.5rem;
+                margin-bottom: 0.25rem;
                 color: #002040;
                 font-weight: 500;
+                font-size: 0.9rem;
             }
 
             .form-group input {
@@ -224,39 +225,67 @@
                 padding: 0.75rem;
                 border: 1px solid #e1e1e1;
                 border-radius: 8px;
-                font-size: 1rem;
-                transition: border-color 0.3s;
+                font-size: 0.95rem;
+                transition: all 0.3s ease;
+                background-color: #f8f8f8;
             }
 
             .form-group input:focus {
                 outline: none;
                 border-color: #002040;
+                background-color: #fff;
+                box-shadow: 0 0 0 2px rgba(0, 32, 64, 0.1);
+            }
+
+            .form-group input::placeholder {
+                color: #999;
             }
 
             .form-submit {
                 width: 100%;
-                padding: 1rem;
+                padding: 0.875rem;
                 background-color: #002040;
                 color: white;
                 border: none;
                 border-radius: 8px;
                 font-size: 1rem;
-                cursor: pointer;
-                transition: background-color 0.3s;
                 font-weight: 500;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                margin-top: 0.5rem;
             }
 
             .form-submit:hover {
                 background-color: #003366;
+                transform: translateY(-1px);
+            }
+
+            .form-footer {
+                margin-top: 1.5rem;
+                text-align: center;
+                font-size: 0.9rem;
+                color: #666;
+            }
+
+            .form-footer a {
+                color: #002040;
+                font-weight: 500;
+                text-decoration: none;
+                margin-left: 0.25rem;
+            }
+
+            .form-footer a:hover {
+                text-decoration: underline;
             }
 
             .social-login {
-                margin-top: 2rem;
+                margin-top: 1.5rem;
                 text-align: center;
             }
 
             .social-login p {
                 color: #666;
+                font-size: 0.9rem;
                 margin-bottom: 1rem;
                 position: relative;
             }
@@ -281,60 +310,31 @@
 
             .social-buttons {
                 display: flex;
-                gap: 1rem;
                 justify-content: center;
+                gap: 1rem;
             }
 
             .social-button {
                 width: 40px;
                 height: 40px;
-                border-radius: 50%;
                 border: 1px solid #e1e1e1;
+                border-radius: 8px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 cursor: pointer;
-                transition: background-color 0.3s;
+                transition: all 0.3s ease;
+                background-color: #fff;
             }
 
             .social-button:hover {
-                background-color: #f5f5f5;
+                border-color: #002040;
+                transform: translateY(-2px);
             }
 
-            .form-footer {
-                margin-top: 2rem;
-                text-align: center;
+            .social-button i {
                 color: #666;
-            }
-
-            .form-footer a {
-                color: #002040;
-                text-decoration: none;
-                font-weight: 500;
-            }
-
-            .remember-forgot {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 1.5rem;
-            }
-
-            .remember-me {
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-                color: #666;
-            }
-
-            .forgot-password {
-                color: #002040;
-                text-decoration: none;
-                font-size: 0.9rem;
-            }
-
-            .forgot-password:hover {
-                text-decoration: underline;
+                font-size: 1.1rem;
             }
 
             /* Page Transition Styles */
@@ -454,8 +454,8 @@
                 <span class="close-btn" onclick="closeModal('registerModal')">&times;</span>
                 <div class="modal-left">
                     <div class="form-header">
-                        <h2 class="form-title">Create Account</h2>
-                        <p class="form-subtitle">Please fill in the details to register</p>
+                        <h2 class="form-title">Welcome to PaUpa</h2>
+                        <p class="form-subtitle">Create your account to get started</p>
                     </div>
                     <form action="{{ route('register') }}" method="POST">
                         @csrf
@@ -469,7 +469,7 @@
                         </div>
                         <div class="form-group">
                             <label for="reg-password">Password</label>
-                            <input type="password" id="reg-password" name="password" placeholder="Create a password" required>
+                            <input type="password" id="reg-password" name="password" placeholder="Create a strong password" required>
                         </div>
                         <div class="form-group">
                             <label for="password_confirmation">Confirm Password</label>
@@ -477,7 +477,7 @@
                         </div>
                         <button type="submit" class="form-submit">Create Account</button>
                         <div class="social-login">
-                            <p>Or register with</p>
+                            <p>Or sign up with</p>
                             <div class="social-buttons">
                                 <div class="social-button">
                                     <i class="fab fa-google"></i>

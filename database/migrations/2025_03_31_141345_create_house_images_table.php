@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('house_id')->constrained('houses')->onDelete('cascade');
             $table->string('image_url');
             $table->integer('image_order')->default(0);
+            $table->boolean('is_front_image')->default(false);
             $table->timestamps();
         });
     }

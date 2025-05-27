@@ -1,187 +1,344 @@
 @extends('landlord.dashboard')
 
 @section('content')
+<div class="property-container">
+    <div class="page-header">
+        <div class="header-content">
+            <a href="{{ route('landlord.history') }}" class="back-btn">
+                <i class="bx bx-arrow-back"></i> Back to Properties
+            </a>
+            <div class="property-status {{ strtolower($rental->status) }}">
+                {{ ucfirst($rental->status) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="property-content">
+        <div class="property-gallery">
+            <div class="main-image">
+                @if($rental->images && $rental->images->where('is_front_image', true)->first())
+                    @php
+                        $frontImage = $rental->images->where('is_front_image', true)->first();
+                        $imagePath = str_replace('public/', '', $frontImage->image_url);
+                    @endphp
+                    <img src="{{ asset('storage/' . $imagePath) }}" alt="Property Front View" id="mainImage" onerror="this.src='{{ asset('images/placeholder.jpg') }}'">
+                @else
+                    <img src="{{ asset('images/placeholder.jpg') }}" alt="Property Image" id="mainImage">
+                @endif
+            </div>
+            
+            <div class="thumbnail-gallery">
+                @if($rental->images && $rental->images->count() > 0)
+                    @foreach($rental->images as $image)
+                        @php
+                            $thumbPath = str_replace('public/', '', $image->image_url);
+                        @endphp
+                        <div class="thumbnail {{ $image->is_front_image ? 'active' : '' }}" 
+                             onclick="updateMainImage('{{ asset('storage/' . $thumbPath) }}', this)">
+                            <img src="{{ asset('storage/' . $thumbPath) }}" alt="Property Image" onerror="this.src='{{ asset('images/placeholder.jpg') }}'">
+                        </div>
+                    @endforeach
+                @else
+                    <div class="no-images">
+                        <p>No additional images available</p>
+                    </div>
+                @endif
+            </div>
+        </div>
+
+        <div class="property-details">
+            <div class="details-section">
+                <h1>{{ $rental->address }}</h1>
+                <div class="key-details">
+                    <div class="detail-item">
+                        <i class="bx bx-bed"></i>
+                        <span>{{ $rental->number_of_rooms }} {{ Str::plural('Room', $rental->number_of_rooms) }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="bx bx-building-house"></i>
+                        <span>{{ ucfirst($rental->house_type) }}</span>
+                    </div>
+                    <div class="detail-item price">
+                        <i class="bx bx-money"></i>
+                        <span>₱{{ number_format($rental->price, 2) }}/month</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="details-section">
+                <h2>Description</h2>
+                <p>{{ $rental->description }}</p>
+            </div>
+
+            <div class="details-section">
+                <h2>Property Features</h2>
+                <div class="features-grid">
+                    <div class="feature">
+                        <i class="bx bx-check-circle"></i>
+                        <span>{{ ucfirst($rental->status) }}</span>
+                    </div>
+                    <div class="feature">
+                        <i class="bx bx-home"></i>
+                        <span>{{ ucfirst($rental->house_type) }}</span>
+                    </div>
+                    <!-- Add more features as needed -->
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <form action="{{ route('rentals.destroy', $rental->id) }}" method="POST" 
+                      onsubmit="return confirm('Are you sure you want to delete this property? This action cannot be undone.');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="delete-btn">
+                        <i class="bx bx-trash"></i> Delete Property
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 <style>
-    
-   .home-container {
-        height: 100%;
-        width: 100%;
-        display: grid;
-        grid-template-columns: 300px 1fr;
-    }   
-    .home-left {
-        background-color: #f0f0f0;
-        height: 100%;
-    }
-    .home-right {
-        height: 100%;
-    }
-    
-    .home-left .home-details {
-        padding: 20px;
-        display: grid;
-        grid-template-columns: 1fr 1fr; /* Two equal columns */
-        gap: 20px;
-        font-size: 16px;
-        color: #333;
-        width: 100%;
-        box-sizing: border-box;
+.property-container {
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #4a5568;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.back-btn:hover {
+    color: #2d3748;
+}
+
+.property-status {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    color: white;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.property-status.available {
+    background: #48BB78;
+}
+
+.property-status.rented {
+    background: #ED8936;
+}
+
+.property-status.under_maintenance {
+    background: #4A5568;
+}
+
+.property-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+/* Gallery Styles */
+.property-gallery {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.main-image {
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+}
+
+.main-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.thumbnail-gallery {
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 1rem;
+}
+
+.thumbnail {
+    height: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+}
+
+.thumbnail:hover, .thumbnail.active {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+.thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Property Details Styles */
+.property-details {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.details-section {
+    margin-bottom: 2rem;
+}
+
+.details-section:last-child {
+    margin-bottom: 0;
+}
+
+.property-details h1 {
+    font-size: 1.75rem;
+    color: #2d3748;
+    margin: 0 0 1rem 0;
+}
+
+.property-details h2 {
+    font-size: 1.25rem;
+    color: #2d3748;
+    margin: 0 0 1rem 0;
+}
+
+.key-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #4a5568;
+}
+
+.detail-item i {
+    font-size: 1.25rem;
+}
+
+.detail-item.price {
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.feature {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #4a5568;
+}
+
+.feature i {
+    color: #48BB78;
+}
+
+.action-buttons {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.delete-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: #FED7D7;
+    color: #C53030;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.delete-btn:hover {
+    background: #FEB2B2;
+}
+
+.no-images {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 2rem;
+    background: #f8fafc;
+    border-radius: 8px;
+    color: #718096;
+}
+
+@media (max-width: 1024px) {
+    .property-content {
+        grid-template-columns: 1fr;
     }
 
-    .home-details h2 {
-        font-size: 22px;
-        margin-bottom: 10px;
-        color: #111;
-        grid-column: span 2; /* Makes the header span across both columns */
+    .main-image {
+        height: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .property-container {
+        padding: 1rem;
     }
 
-    .home-details p {
-        margin: 0;
-        line-height: 1.6;
-    }
-
-    .home-details .label {
-        font-weight: 600;
-        color: #555;
-    }
-
-    .carousel {
-        margin: 10px;
-        display: flex;
+    .header-content {
         flex-direction: column;
-        align-items: center;
-        position: relative;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
+        gap: 1rem;
+        align-items: flex-start;
     }
 
-    .carousel-slides {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        transition: transform 0.5s ease;
+    .key-details {
+        flex-direction: column;
+        gap: 1rem;
     }
-
-    .carousel-slide {
-        flex: 0 0 100%; /* Each slide takes 100% of the carousel width */
-        height: 100%;   /* Match the carousel height */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .carousel-slide img {
-        height: 100%;
-        width: 100%;
-        object-fit: contain;
-    }
-
-    button.prev,
-    button.next {
-        position: absolute;
-        top: 30%;
-        background-color: rgba(0, 0, 0, 0.5);
-        color: white;
-        font-size: 2rem;
-        padding: 10px;
-        border: none;
-        cursor: pointer;
-        z-index: 1;
-        top: 50%
-    }
-
-    button.prev {
-        left: 10px;
-    }
-
-    button.next {
-        right: 10px;
-    }
-    .home-left .img {
-        width: 100%;
-        height: 50%;
-        overflow: hidden;
-    }
-    .home-left .img img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
+}
 </style>
-<div class="home-container">
-    <div class="home-left">
-        <div class="img">
-            @if($rental->images->isNotEmpty())
-                <img src="{{ asset('storage/' . $rental->images->first()->image_url) }}" alt="Main House Image">
-            @else
-                <img src="{{ asset('images/placeholder.jpg') }}" alt="Placeholder Image">
-            @endif
-        </div>
-        <div class="home-details">
-            <h2>Property Details</h2>
-            <p><span class="label">Address:</span>{{ $rental->address }}</p>
-            <p><span class="label">Description:</span> {{ $rental->description }}</p>
-            <p><span class="label">Price:</span>{{ $rental->price }}</p>
-            <p><span class="label">Number of Rooms:</span> {{ $rental->number_of_rooms }}</p>
-            <p><span class="label">House Type:</span> {{ $rental->House_type }}</p>
-            <p><span class="label">Status:</span> {{ $rental->status }}</p>
-        </div>
-    </div>
-    <div class="carousel">
-        <div class="carousel-slides">
-            @if($rental->images->count() > 1)
-                @foreach($rental->images->slice(1) as $image)
-                    <div class="carousel-slide">
-                        <img src="{{ asset('storage/' . $image->image_url) }}" alt="House Image">
-                    </div>
-                @endforeach
-            @else
-                <p>No additional images available.</p>
-            @endif
-            {{-- <div class="carousel-slide">
-                <img src="https://media.istockphoto.com/id/485371557/photo/twilight-at-spirit-island.jpg?s=612x612&w=0&k=20&c=FSGliJ4EKFP70Yjpzso0HfRR4WwflC6GKfl4F3Hj7fk=" alt="Image 1">
-            </div>
-            <div class="carousel-slide">
-                <img src="{{ asset('assets/project-2.jpg') }}" alt="Image 2">
-            </div>
-            <div class="carousel-slide">
-                <img src="{{ asset('assets/project-3.jpg') }}" alt="Image 3">
-            </div>
-            <div class="carousel-slide">
-                <img src="{{ asset('assets/project-4.jpg') }}" alt="Image 4">
-            </div>
-            <div class="carousel-slide">
-                <img src="{{ asset('assets/project-5.jpg') }}" alt="Image 5">
-            </div> --}}
-        </div>
-        <button class="prev">&#10094;</button>
-        <button class="next">&#10095;</button>
-    </div>
 
-</div>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const slides = document.querySelectorAll('.carousel-slide');
-        const prevButton = document.querySelector('.prev');
-        const nextButton = document.querySelector('.next');
-        let currentIndex = 0;
-
-        function updateSlidePosition() {
-            const offset = -currentIndex * 100;
-            document.querySelector('.carousel-slides').style.transform = `translateX(${offset}%)`;
-        }
-
-        prevButton.addEventListener('click', function () {
-            currentIndex = (currentIndex === 0) ? slides.length - 1 : currentIndex - 1;
-            updateSlidePosition();
-        });
-
-        nextButton.addEventListener('click', function () {
-            currentIndex = (currentIndex === slides.length - 1) ? 0 : currentIndex + 1;
-            updateSlidePosition();
-        });
-    });
+function updateMainImage(src, thumbnail) {
+    document.getElementById('mainImage').src = src;
+    // Remove active class from all thumbnails
+    document.querySelectorAll('.thumbnail').forEach(thumb => thumb.classList.remove('active'));
+    // Add active class to clicked thumbnail
+    thumbnail.classList.add('active');
+}
 </script>
 @endsection

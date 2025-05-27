@@ -1,129 +1,392 @@
 @extends('landlord.dashboard')
 
 @section('content')
-<style>
-    * {
-        padding: 0;
-        margin: 0;
-        box-sizing: border-box;
-        font-family: 'Poppins', sans-serif;
-    } 
-    .profile-card {
-        display: flex;
-        border: 1px solid lightpink;
-        width: 100%;
-        height: 400px;
-        background-color: lightblue;
-    }
-    .profile-left {
-        width: 30%;
-        border: 1px solid lightpink;
-        background-color: lightgreen;
-        flex-direction: column;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-    .profile-image {
-        width: 200px;
-        height: 200px;
-        border-radius: 50%;
-        overflow: hidden;
-    }
-    .profile-image img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-    .profile-left input[type="file"] {
-        margin-top: 10px;
-        padding: 5px;
-        border: 1px solid lightpink;
-        border-radius: 5px;
-        margin: 0 auto;
-    }
-
-    .profile-card .profile-right {
-        width: 70%;
-        border: 1px solid lightpink;
-        background-color: lightyellow;
-        padding: 20px;
-    }
-    .profile-card .profile-right h2 {
-        text-align: center;
-    }
-    .profile-info {
-        display: grid;
-        grid-template-columns: 1fr 1fr; /* Two equal columns */
-        gap: 30px;
-    }
-    .profile-info label {
-        font-weight: bold;
-    }
-</style>
-
-    <div class="profile-card">
-        
-        <div class="profile-left">
-            <div class="profile-image">
-                <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMSEhUSE
-                hIVFRUWFhUVFRUVFRcVFhUXFxUWGBUVFxUYHSggGBolGxYVITEhJSkrLi4uGB8zODMtNygtLisBCg
-                oKDg0OGxAQGi0dHSUtLS0tLS0tLS0tLS0vLS0tLS0tLS0tLS0tLS0tLSstLS0tLS0tLS0tLS0tLS0
-                tLy03Lf/AABEIAQwAvAMBIgACEQEDEQH/xAAbAAACAwEBAQAAAAAAAAAAAAAAAQIDBAUGB//EAD8Q
-                AAEDAQUGBQIDBQcFAQAAAAEAAhEDBBIhMUEFUWFxgZEiobHB8BPRBjLhQlKiwvEUI3KCkrLiM2Jj0v
-                MV/8QAGQEAAwEBAQAAAAAAAAAAAAAAAAECAwQF/8QAJREBAQACAgICAQQDAAAAAAAAAAECEQMhEjEi
-                QVEEE0JhIzJx/9oADAMBAAIRAxEAPwDxiEk1KwhCEjNCSEA0JIQDQhCAaEkIBoQhIxKaSEBJCSEGaE
-                ISBoQgJGEipEJFOCqUIQrZhCE0AISQgBNJNACEISM0JJhACaSEGaEISAQhNAEqSSElGmkFIJGFFymo
-                uRBVCEIWjIIQhACEIQAhCEA0JJpGEIQgGhJBKAaJUC5K8novJamqbyYejR+UWphRBUpUKSQlKcpKMF
-                DkryRciQWqE0QiFoyCEJIBoQhACEICAEIQgBNJCACVCUFCcibQhCEyCEIhANphW3lUpBTVypSi8opp
-                HsSiUk0yJNJCAaEIhIEhOE2sJIA1wQaMIhSLTuShBEkrKdMuMAScT2Elan7LqCkKxGBOAgzdjF8aNy
-                9ckbh6tYZSTjXTL52KRTSBkkhTYyU/Re0YQrSz53VaW1aEIAVjG4pUm5/PmaWz8UFJmfD2+eibmwmR
-                BQWkSkpBqcBGz0ihSwVbjinCvRppIQAmkmgBabJTcHsN0wT4cDDuR1T2bYjWqNpgxenE6AAknyXvrr
-                ZaI/KRA/dgYABY8nJ49NuPj8u3zog3QccDdPA6e/8ApK02Gg5xDiDcJc0u0BuE9NF6v/8AGp1X1XOk
-                A3RAwxBJDucYJ2iwspNuMbDTJIkkEnmScgovNNaVOG77ef2dTusL3fmdeaOADXT6HyXqqfjpveYN6Q
-                BoAAQABxleMtloc14Zoy8BxDp9oHReoslqAsxxxBx6lZ543/a/bTjs9fh5XarQHANAAjICBMnGN+Pk
-                FXa7Jcp03HOoHHkBF3uDKjb6l5/IAe/utlrBqUaZibrbusANJHnA8l0S2TFj4zK5acpjVqaLreOPpg
-                VC9czx4arOXFaa8mW/Frqtwn5kqGtWmi683sPP7FSo0hJB4weijemnjvtUxsHmpMZBG4gA9cD7KbWS
-                MdPhCHiQN84df1hLZ6VVhl59DHsoRhO5XWh/374+sqlpwjgfb7Kp6RfatyE3aFJUkwk5MIJQEUIQmT
-                Xsywms+4CG4EknHAQMBrmF0av4dcB4agcdxF2eEyQj8Jsd9UvEXWth87nHADjLZ/ynevTlrb90ZHWc
-                5XNycmUy1HTxceNx3XjdkVTRtDC8FuMGRGDgWzjpjPReu2k+DM5eR+EHqsFusrXtLHD8pMOGY4j3C5
-                Fl2qWX2VZcZAnP8ou4zngG48FOU/c7ntWP+Pq+nsbPVFwu1Prl7LHtWpMEaiV547ecy6GtluJMn8zT
-                u3EEeS3P2xSqMbDoIBEOEEbueCj9vKd6X+5jetuDtgeMHePQqVa1FouAG8Yw55eyp2jaA90tyGAMZ7
-                1VTfiXnE4nmSuqY/Gbcty+V0laokARgADGpjEnic13Pw/Umk4Z3TJbvBEyOOB7LzxM4rqbDtLWh7SY
-                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" alt="">
+<div class="profile-container">
+    <!-- Profile Header -->
+    <div class="profile-header">
+        <div class="header-content">
+            <div class="profile-image-wrapper">
+                <div class="profile-image">
+                    <img src="{{ asset('images/team1.jpg') }}" alt="Profile Photo">
+                    <div class="image-overlay">
+                        <i class="bx bx-camera"></i>
+                        <span>Change Photo</span>
+                    </div>
+                </div>
             </div>
-            <form action="" method="POST" enctype="multipart/form-data">
-                @csrf
-                <input type="file">
-                <button type="submit">Upload</button>
-            </form>
-            
+            <div class="profile-title">
+                <h1>{{ $user->name }}</h1>
+                <span class="profile-role">Property Manager</span>
+            </div>
         </div>
-        <div class="profile-right">
-            <h2>Profile Information</h2>
-            
-            <div class="profile-info">
-                <div>
-                    <label for="name">Name:</label>
-                    <input type="text" id="name" name="name" value="{{ $user->name }}" disabled>
+    </div>
+
+    <!-- Profile Content -->
+    <div class="profile-content">
+        <!-- Left Section - Personal Information -->
+        <div class="profile-section personal-info">
+            <div class="section-header">
+                <h2><i class="bx bx-user-circle"></i> Personal Information</h2>
+                <button class="edit-btn" onclick="toggleEdit()">
+                    <i class="bx bx-edit"></i> Edit Profile
+                </button>
+            </div>
+            <div class="info-grid">
+                <div class="info-group">
+                    <label>Full Name</label>
+                    <input type="text" value="{{ $user->name }}" disabled>
                 </div>
-                <div>
-                    <label for="name1">Email:</label>
-                    <input type="text" id="name1" name="name" value="{{ $user->email }}" disabled>
+                <div class="info-group">
+                    <label>Email Address</label>
+                    <input type="email" value="{{ $user->email }}" disabled>
                 </div>
-                <div>
-                    <label for="name2">Contact:</label>
-                    <input type="text" id="name2" name="name" value="{{ $user->info->contact_number }}" disabled>
+                <div class="info-group">
+                    <label>Contact Number</label>
+                    <input type="tel" value="{{ $user->info->contact_number ?? 'Not set' }}" disabled>
                 </div>
-                <div>
-                    <label for="name3">Birthday:</label>
-                    <input type="text" id="name3" name="name" value="{{ $user->info->birth_date }}" disabled>
+                <div class="info-group">
+                    <label>Date of Birth</label>
+                    <input type="text" value="{{ $user->info->birth_date ?? 'Not set' }}" disabled>
                 </div>
-                <div>
-                    <label for="name4">Created at:</label>
-                    <input type="text" id="name4" name="name" value="{{ $user->created_at }}" disabled>
+                <div class="info-group full-width">
+                    <label>Address</label>
+                    <input type="text" value="Metro Manila, Philippines" disabled>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Section - Account Settings -->
+        <div class="profile-section account-settings">
+            <div class="section-header">
+                <h2><i class="bx bx-cog"></i> Account Settings</h2>
+            </div>
+            <div class="settings-list">
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <i class="bx bx-bell"></i>
+                        <div>
+                            <h3>Notifications</h3>
+                            <p>Manage your email and app notifications</p>
+                        </div>
+                    </div>
+                    <button class="setting-btn">Manage</button>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <i class="bx bx-lock-alt"></i>
+                        <div>
+                            <h3>Password & Security</h3>
+                            <p>Update your password and security settings</p>
+                        </div>
+                    </div>
+                    <button class="setting-btn">Update</button>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <i class="bx bx-credit-card"></i>
+                        <div>
+                            <h3>Payment Methods</h3>
+                            <p>Add or remove payment methods</p>
+                        </div>
+                    </div>
+                    <button class="setting-btn">Manage</button>
                 </div>
             </div>
         </div>
     </div>
+</div>
+
+<style>
+/* Profile Container */
+.profile-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Profile Header */
+.profile-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 16px;
+    padding: 3rem 2rem;
+    margin-bottom: 2rem;
+    color: white;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.profile-image-wrapper {
+    position: relative;
+}
+
+.profile-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    cursor: pointer;
+}
+
+.profile-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.profile-image:hover .image-overlay {
+    opacity: 1;
+}
+
+.image-overlay i {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.profile-title h1 {
+    font-size: 2rem;
+    margin: 0;
+    font-weight: 600;
+}
+
+.profile-role {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+/* Profile Content */
+.profile-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+}
+
+/* Profile Sections */
+.profile-section {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.section-header h2 {
+    font-size: 1.25rem;
+    color: #2d3748;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.section-header h2 i {
+    font-size: 1.5rem;
+    color: #4a5568;
+}
+
+/* Personal Information */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+.info-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.info-group.full-width {
+    grid-column: span 2;
+}
+
+.info-group label {
+    font-size: 0.9rem;
+    color: #4a5568;
+    font-weight: 500;
+}
+
+.info-group input {
+    padding: 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #2d3748;
+    background: #f8fafc;
+}
+
+.info-group input:disabled {
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+/* Account Settings */
+.settings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.setting-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.setting-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.setting-info i {
+    font-size: 1.5rem;
+    color: #4a5568;
+    padding: 0.75rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.setting-info h3 {
+    margin: 0;
+    font-size: 1rem;
+    color: #2d3748;
+}
+
+.setting-info p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #718096;
+}
+
+/* Buttons */
+.edit-btn, .setting-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.edit-btn {
+    background: #667eea;
+    color: white;
+}
+
+.setting-btn {
+    background: #edf2f7;
+    color: #4a5568;
+}
+
+.edit-btn:hover, .setting-btn:hover {
+    transform: translateY(-2px);
+}
+
+.edit-btn:hover {
+    background: #5a67d8;
+}
+
+.setting-btn:hover {
+    background: #e2e8f0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .profile-container {
+        padding: 1rem;
+    }
+
+    .profile-header {
+        padding: 2rem 1rem;
+    }
+
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .profile-content {
+        grid-template-columns: 1fr;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .info-group.full-width {
+        grid-column: span 1;
+    }
+
+    .setting-item {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .setting-info {
+        flex-direction: column;
+    }
+}
+</style>
+
+<script>
+function toggleEdit() {
+    const inputs = document.querySelectorAll('.info-group input');
+    inputs.forEach(input => {
+        input.disabled = !input.disabled;
+    });
+    
+    const editBtn = document.querySelector('.edit-btn');
+    if (editBtn.innerHTML.includes('Edit')) {
+        editBtn.innerHTML = '<i class="bx bx-save"></i> Save Changes';
+    } else {
+        editBtn.innerHTML = '<i class="bx bx-edit"></i> Edit Profile';
+        // Here you would typically make an API call to save the changes
+        alert('Changes saved! (Frontend Only)');
+    }
+}
+</script>
 @endsection
