@@ -3,10 +3,14 @@
         <img src="{{ asset('images/logo.png') }}" alt="">
     </div>
     <ul class="nav-list">
-        <li>
-            <i class='bx bx-grid-alt'></i>
-            <a href="">Home</a>
-        </li>
+
+        <a href="{{ route('admin.home') }}">
+            <li>
+                <i class='bx bx-grid-alt'></i>
+                Home
+            </li>
+        </a>
+        
         <a href="{{ route('users.index') }}">
             <li>
                 <i class='bx bx-user'></i>
@@ -21,10 +25,12 @@
             </li>
         </a>
         
-        <li>
-            <i class='bx bx-cart-alt'></i>
-            <a href="">Reports</a>
-        </li>
+        <a href="{{ route('admin.reports') }}">
+            <li>
+                <i class='bx bx-chart'></i>
+                Reports
+            </li>
+        </a>
         <a href="{{ route('admin.profile') }}">
             <li>
                 <i class='bx bx-user'></i>

@@ -26,4 +26,9 @@ class House extends Model
     {
         return $this->hasMany(HouseImage::class)->orderBy('image_order');
     }
+
+    public function applications()
+    {
+        return $this->hasMany(Transaction::class, 'house_id');
+    }
 }

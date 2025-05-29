@@ -8,28 +8,28 @@
             <i class="bx bx-home-alt"></i>
             <div class="card-content">
                 <h3>Total Properties</h3>
-                <p class="number">5</p>
+                <p class="number">{{ $totalProperties }}</p>
             </div>
         </div>
         <div class="overview-card available-properties">
             <i class="bx bx-check-circle"></i>
             <div class="card-content">
                 <h3>Available Properties</h3>
-                <p class="number">3</p>
+                <p class="number">{{ $availableProperties }}</p>
             </div>
         </div>
         <div class="overview-card pending-applications">
             <i class="bx bx-time"></i>
             <div class="card-content">
                 <h3>Pending Applications</h3>
-                <p class="number">2</p>
+                <p class="number">{{ $pendingApplications }}</p>
             </div>
         </div>
         <div class="overview-card total-tenants">
             <i class="bx bx-group"></i>
             <div class="card-content">
-                <h3>Active Tenants</h3>
-                <p class="number">4</p>
+                <h3>Active Rentals</h3>
+                <p class="number">{{ $activeRentals }}</p>
             </div>
         </div>
     </div>
@@ -40,48 +40,43 @@
         <div class="dashboard-section applications-section">
             <div class="section-header">
                 <h2><i class="bx bx-file"></i> Recent Applications</h2>
-                <a href="#" class="view-all-btn">View All</a>
+                <a href="{{ route('landlord.notifications') }}" class="view-all-btn">View All</a>
             </div>
             <div class="applications-list">
-                <!-- Sample Application 1 -->
+                @forelse($recentApplications as $application)
                 <div class="application-card">
                     <div class="applicant-info">
-                        <img src="{{ asset('images/team1.jpg') }}" alt="Applicant Photo" class="applicant-photo">
+                        <img src="{{ asset('images/placeholder-avatar.jpg') }}" alt="Applicant Photo" class="applicant-photo">
                         <div class="applicant-details">
-                            <h4>Prince Erickson M. Sanado</h4>
-                            <p>Applied for: Modern Apartment in City Center</p>
-                            <span class="application-date">2 hours ago</span>
+                            <h4>{{ $application->tenant->name }}</h4>
+                            <p>Applied for: {{ $application->rental->address }}</p>
+                            <span class="application-date">{{ $application->created_at->diffForHumans() }}</span>
                         </div>
                     </div>
                     <div class="application-actions">
-                        <button class="approve-btn" onclick="approveApplication()">
-                            <i class="bx bx-check"></i> Approve
-                        </button>
-                        <button class="reject-btn" onclick="rejectApplication()">
-                            <i class="bx bx-x"></i> Reject
-                        </button>
+                        <form action="{{ route('landlord.applications.approve', $application->id) }}" method="POST" class="action-form" onsubmit="return confirm('Are you sure you want to approve this application? This will automatically cancel all other pending applications for this property.');">
+                            @csrf
+                            <button type="submit" class="approve-btn">
+                                <i class="bx bx-check"></i> Approve
+                            </button>
+                        </form>
+                        <form action="{{ route('landlord.applications.reject', $application->id) }}" method="POST" class="action-form" onsubmit="return confirm('Are you sure you want to cancel this application?');">
+                            @csrf
+                            <button type="submit" class="reject-btn">
+                                <i class="bx bx-x"></i> Cancel
+                            </button>
+                        </form>
                     </div>
                 </div>
-
-                <!-- Sample Application 2 -->
-                <div class="application-card">
-                    <div class="applicant-info">
-                        <img src="{{ asset('images/team2.jpg') }}" alt="Applicant Photo" class="applicant-photo">
-                        <div class="applicant-details">
-                            <h4>Daryl S. Lamay</h4>
-                            <p>Applied for: Cozy Studio Unit</p>
-                            <span class="application-date">3 hours ago</span>
-                        </div>
-                    </div>
-                    <div class="application-actions">
-                        <button class="approve-btn" onclick="approveApplication()">
-                            <i class="bx bx-check"></i> Approve
-                        </button>
-                        <button class="reject-btn" onclick="rejectApplication()">
-                            <i class="bx bx-x"></i> Reject
-                        </button>
+                @empty
+                <div class="no-applications">
+                    <div class="no-applications-content">
+                        <i class="bx bx-file"></i>
+                        <h3>No Pending Applications</h3>
+                        <p>When tenants apply for your properties, they will appear here</p>
                     </div>
                 </div>
+                @endforelse
             </div>
         </div>
 
@@ -154,18 +149,18 @@
 /* Overview Section */
 .overview-section {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5rem;
     margin-bottom: 2rem;
 }
 
 .overview-card {
     background: white;
+    padding: 1.5rem;
     border-radius: 16px;
-    padding: 1.75rem;
     display: flex;
     align-items: center;
-    gap: 1.25rem;
+    gap: 1rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease;
     border: 1px solid rgba(0, 0, 0, 0.05);
@@ -313,6 +308,10 @@
     gap: 0.75rem;
 }
 
+.action-form {
+    margin: 0;
+}
+
 .approve-btn, .reject-btn {
     padding: 0.5rem 1rem;
     border: none;
@@ -344,6 +343,31 @@
 .reject-btn:hover {
     background: #e53e3e;
     transform: translateY(-2px);
+}
+
+.no-applications {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 2px dashed #e2e8f0;
+}
+
+.no-applications i {
+    font-size: 3rem;
+    color: #a0aec0;
+    margin-bottom: 1rem;
+}
+
+.no-applications h3 {
+    color: #2d3748;
+    font-size: 1.25rem;
+    margin: 0 0 0.5rem 0;
+}
+
+.no-applications p {
+    color: #718096;
+    margin: 0;
 }
 
 /* Payment Section */
@@ -461,7 +485,7 @@
     padding: 0.5rem 1rem;
     border-radius: 8px;
     text-decoration: none;
-    font-size: 0.9rem;
+    font-size: 0.875rem;
     transition: all 0.3s ease;
     background: #edf2f7;
     color: #4a5568;
@@ -480,31 +504,26 @@
     }
 
     .overview-section {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-template-columns: 1fr;
     }
 
     .dashboard-grid {
         grid-template-columns: 1fr;
     }
 
-    .application-card,
-    .payment-card {
+    .application-card {
         flex-direction: column;
-        gap: 1rem;
         text-align: center;
-    }
-
-    .application-actions {
-        justify-content: center;
+        gap: 1rem;
     }
 
     .applicant-info {
         flex-direction: column;
-        align-items: center;
     }
 
-    .payment-amount {
-        margin-top: 0.5rem;
+    .application-actions {
+        width: 100%;
+        justify-content: center;
     }
 }
 </style>

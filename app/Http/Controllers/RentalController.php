@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\House;
 use App\Models\HouseImage;
 use App\Models\Transaction;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -112,18 +113,26 @@ class RentalController extends Controller
         }
     }
 
-    public function show($id) {
+    public function show($id)
+    {
+        $rental = House::with(['images', 'landlord', 'landlord.info', 'applications.tenant'])
+            ->findOrFail($id);
+
         $user = Auth::user();
-        $rental = House::with('images')->findOrFail($id);
         $roleName = $user->roles->pluck('role_name')->first();
 
+        // Check if user has permission to view this rental
+        if ($roleName === 'landlord' && $rental->landlord_id !== $user->id) {
+            abort(403, 'Unauthorized access.');
+        }
+
         switch ($roleName) {
-            case 'tenant':
-                return view('tenant.rentals.showRental', compact('rental'));
             case 'admin':
-                return view('admin.listings.index', compact('rental'));
+                return view('admin.listings.show', compact('rental'));
             case 'landlord':
                 return view('landlord.rentals.showRental', compact('rental'));
+            case 'tenant':
+                return view('tenant.rentals.showRental', compact('rental'));
             default:
                 abort(403, 'Unauthorized role.');
         }
@@ -183,5 +192,233 @@ class RentalController extends Controller
             'message' => 'Rental application submitted successfully.',
             'transaction' => $transaction,
         ]);
+    }
+
+    public function landlordHome()
+    {
+        $landlordId = auth()->id();
+        
+        // Get counts for overview cards
+        $totalProperties = House::where('landlord_id', $landlordId)->count();
+        $availableProperties = House::where('landlord_id', $landlordId)
+            ->where('status', 'available')
+            ->count();
+        $pendingApplications = Transaction::whereHas('rental', function($query) use ($landlordId) {
+            $query->where('landlord_id', $landlordId);
+        })->where('status', 'pending')->count();
+        $activeRentals = House::where('landlord_id', $landlordId)
+            ->where('status', 'rented')
+            ->count();
+
+        // Get recent applications
+        $recentApplications = Transaction::with(['tenant', 'rental'])
+            ->whereHas('rental', function($query) use ($landlordId) {
+                $query->where('landlord_id', $landlordId);
+            })
+            ->where('status', 'pending')
+            ->latest()
+            ->take(5)
+            ->get();
+
+        return view('landlord.layouts.home', compact(
+            'totalProperties',
+            'availableProperties',
+            'pendingApplications',
+            'activeRentals',
+            'recentApplications'
+        ));
+    }
+
+    public function tenantHome()
+    {
+        $tenantId = auth()->id();
+
+        // Get active rentals
+        $rentals = Transaction::with(['rental.images'])
+            ->where('tenant_id', $tenantId)
+            ->where('status', 'approved')
+            ->get();
+
+        $activeRentals = $rentals->count();
+
+        // Get pending applications
+        $pendingApplications = Transaction::where('tenant_id', $tenantId)
+            ->where('status', 'pending')
+            ->count();
+
+        // Calculate total monthly rent
+        $totalMonthlyRent = $rentals->sum('rental.price');
+
+        // Get next payment date (first day of next month for active rentals)
+        $nextPaymentDate = $activeRentals > 0 ? now()->addMonth()->startOfMonth()->format('M d, Y') : null;
+
+        // Get recent applications
+        $recentApplications = Transaction::with(['rental.images'])
+            ->where('tenant_id', $tenantId)
+            ->latest()
+            ->take(5)
+            ->get();
+
+        return view('tenant.layouts.home', compact(
+            'rentals',
+            'activeRentals',
+            'pendingApplications',
+            'totalMonthlyRent',
+            'nextPaymentDate',
+            'recentApplications'
+        ));
+    }
+
+    public function adminHome()
+    {
+        // Get overall statistics
+        $totalProperties = House::count();
+        $availableProperties = House::where('status', 'available')->count();
+        $rentedProperties = House::where('status', 'rented')->count();
+        $underMaintenanceProperties = House::where('status', 'under_maintenance')->count();
+
+        // Get total landlords and tenants
+        $totalLandlords = User::whereHas('roles', function($query) {
+            $query->where('role_name', 'landlord');
+        })->count();
+
+        $totalTenants = User::whereHas('roles', function($query) {
+            $query->where('role_name', 'tenant');
+        })->count();
+
+        // Get recent applications
+        $recentApplications = Transaction::with(['tenant', 'rental'])
+            ->where('status', 'pending')
+            ->latest()
+            ->take(5)
+            ->get();
+
+        // Get recent properties
+        $recentProperties = House::with(['landlord', 'images'])
+            ->latest()
+            ->take(5)
+            ->get();
+
+        return view('admin.layouts.home', compact(
+            'totalProperties',
+            'availableProperties',
+            'rentedProperties',
+            'underMaintenanceProperties',
+            'totalLandlords',
+            'totalTenants',
+            'recentApplications',
+            'recentProperties'
+        ));
+    }
+
+    public function reports()
+    {
+        // Get date range (default to last 30 days)
+        $endDate = now();
+        $startDate = now()->subDays(30);
+
+        // Calculate total revenue and trend
+        $totalRevenue = Transaction::where('status', 'completed')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->sum('total_amount');
+
+        $previousRevenue = Transaction::where('status', 'completed')
+            ->whereBetween('created_at', [$startDate->copy()->subDays(30), $startDate])
+            ->sum('total_amount');
+
+        $revenueTrend = $previousRevenue > 0 
+            ? (($totalRevenue - $previousRevenue) / $previousRevenue) * 100 
+            : 100;
+
+        // Get transaction statistics
+        $totalTransactions = Transaction::whereBetween('created_at', [$startDate, $endDate])->count();
+        $previousTransactions = Transaction::whereBetween('created_at', [$startDate->copy()->subDays(30), $startDate])->count();
+        $transactionsTrend = $previousTransactions > 0 
+            ? (($totalTransactions - $previousTransactions) / $previousTransactions) * 100 
+            : 100;
+
+        // Calculate occupancy rate
+        $totalProperties = House::count();
+        $rentedProperties = House::where('status', 'rented')->count();
+        $occupancyRate = $totalProperties > 0 ? ($rentedProperties / $totalProperties) * 100 : 0;
+
+        $previousRented = House::where('status', 'rented')
+            ->where('updated_at', '<=', $startDate)
+            ->count();
+        $previousTotal = House::where('updated_at', '<=', $startDate)->count();
+        $previousOccupancy = $previousTotal > 0 ? ($previousRented / $previousTotal) * 100 : 0;
+        $occupancyTrend = $previousOccupancy > 0 
+            ? (($occupancyRate - $previousOccupancy) / $previousOccupancy) * 100 
+            : 100;
+
+        // Get new applications count
+        $newApplications = Transaction::where('status', 'pending')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->count();
+        $previousApplications = Transaction::where('status', 'pending')
+            ->whereBetween('created_at', [$startDate->copy()->subDays(30), $startDate])
+            ->count();
+        $applicationsTrend = $previousApplications > 0 
+            ? (($newApplications - $previousApplications) / $previousApplications) * 100 
+            : 100;
+
+        // Get chart data
+        $revenueChartLabels = [];
+        $revenueChartData = [];
+        for ($i = 0; $i < 12; $i++) {
+            $month = now()->subMonths($i);
+            $revenueChartLabels[] = $month->format('M Y');
+            $revenueChartData[] = Transaction::where('status', 'completed')
+                ->whereYear('created_at', $month->year)
+                ->whereMonth('created_at', $month->month)
+                ->sum('total_amount');
+        }
+        $revenueChartLabels = array_reverse($revenueChartLabels);
+        $revenueChartData = array_reverse($revenueChartData);
+
+        // Get property performance data
+        $propertyChartLabels = House::pluck('address')->take(10)->toArray();
+        $propertyChartData = House::withCount(['applications as occupancy_rate' => function($query) {
+            $query->where('status', 'approved');
+        }])->take(10)->pluck('occupancy_rate')->toArray();
+
+        // Get recent transactions
+        $recentTransactions = Transaction::with(['tenant', 'rental'])
+            ->latest()
+            ->take(5)
+            ->get();
+
+        // Get top performing properties
+        $topProperties = House::withCount(['applications as total_applications'])
+            ->withSum(['applications as total_revenue' => function($query) {
+                $query->where('status', 'completed');
+            }], 'total_amount')
+            ->orderByDesc('total_revenue')
+            ->take(5)
+            ->get()
+            ->map(function($property) {
+                $property->occupancy_rate = $property->total_applications > 0 
+                    ? ($property->applications()->where('status', 'approved')->count() / $property->total_applications) * 100 
+                    : 0;
+                $property->trend = rand(-20, 50); // This should be calculated based on historical data
+                return $property;
+            });
+
+        return view('admin.reports.index', compact(
+            'totalRevenue',
+            'revenueTrend',
+            'totalTransactions',
+            'transactionsTrend',
+            'occupancyRate',
+            'occupancyTrend',
+            'newApplications',
+            'applicationsTrend',
+            'revenueChartLabels',
+            'revenueChartData',
+            'propertyChartLabels',
+            'propertyChartData',
+            'recentTransactions',
+            'topProperties'
+        ));
     }
 }
