@@ -15,13 +15,33 @@ class VerifyEmailController extends Controller
     public function __invoke(EmailVerificationRequest $request): RedirectResponse
     {
         if ($request->user()->hasVerifiedEmail()) {
-            return redirect()->intended(route('dashboard', absolute: false).'?verified=1');
+            return $this->getRedirectByRole($request->user());
         }
 
         if ($request->user()->markEmailAsVerified()) {
             event(new Verified($request->user()));
         }
 
-        return redirect()->intended(route('dashboard', absolute: false).'?verified=1');
+        return $this->getRedirectByRole($request->user());
+    }
+
+    /**
+     * Get the redirect route based on user role.
+     */
+    private function getRedirectByRole($user): RedirectResponse
+    {
+        $roleName = $user->roles->pluck('role_name')->first();
+        $verified = '?verified=1';
+
+        switch ($roleName) {
+            case 'tenant':
+                return redirect()->route('tenant.home', absolute: false)->with('verified', 1);
+            case 'landlord':
+                return redirect()->route('landlord.home', absolute: false)->with('verified', 1);
+            case 'admin':
+                return redirect()->route('admin.home', absolute: false)->with('verified', 1);
+            default:
+                return redirect()->route('home', absolute: false)->with('verified', 1);
+        }
     }
 }

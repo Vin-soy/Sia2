@@ -372,6 +372,44 @@
                 0% { transform: rotate(0deg); }
                 100% { transform: rotate(360deg); }
             }
+
+            .alert {
+                padding: 1rem;
+                border-radius: 8px;
+                margin-bottom: 1.5rem;
+            }
+
+            .alert-error {
+                background-color: #FEE2E2;
+                border: 1px solid #FCA5A5;
+                color: #DC2626;
+            }
+
+            .alert-error ul {
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            .alert-error li {
+                margin-bottom: 0.5rem;
+            }
+
+            .alert-error li:last-child {
+                margin-bottom: 0;
+            }
+
+            .error-message {
+                display: block;
+                color: #DC2626;
+                font-size: 0.875rem;
+                margin-top: 0.5rem;
+            }
+
+            .form-group input.error,
+            .form-group select.error {
+                border-color: #DC2626;
+            }
         </style>
     </head>
     <body>
@@ -407,15 +445,30 @@
                         <h2 class="form-title">Welcome Back</h2>
                         <p class="form-subtitle">Please enter your details to sign in</p>
                     </div>
+                    @if ($errors->any())
+                    <div class="alert alert-error">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @endif
                     <form action="{{ route('login') }}" method="POST">
                         @csrf
                         <div class="form-group">
                             <label for="email">Email</label>
-                            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                            <input type="email" id="email" name="email" placeholder="Enter your email" required value="{{ old('email') }}">
+                            @error('email')
+                                <span class="error-message">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="form-group">
                             <label for="password">Password</label>
                             <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                            @error('password')
+                                <span class="error-message">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="remember-forgot">
                             <label class="remember-me">
@@ -457,23 +510,55 @@
                         <h2 class="form-title">Welcome to PaUpa</h2>
                         <p class="form-subtitle">Create your account to get started</p>
                     </div>
+                    @if ($errors->any())
+                    <div class="alert alert-error">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @endif
                     <form action="{{ route('register') }}" method="POST">
                         @csrf
                         <div class="form-group">
                             <label for="name">Full Name</label>
-                            <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+                            <input type="text" id="name" name="name" placeholder="Enter your full name" required value="{{ old('name') }}">
+                            @error('name')
+                                <span class="error-message">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="form-group">
                             <label for="reg-email">Email</label>
-                            <input type="email" id="reg-email" name="email" placeholder="Enter your email" required>
+                            <input type="email" id="reg-email" name="email" placeholder="Enter your email" required value="{{ old('email') }}">
+                            @error('email')
+                                <span class="error-message">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="form-group">
                             <label for="reg-password">Password</label>
                             <input type="password" id="reg-password" name="password" placeholder="Create a strong password" required>
+                            @error('password')
+                                <span class="error-message">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="form-group">
                             <label for="password_confirmation">Confirm Password</label>
                             <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Confirm your password" required>
+                            @error('password_confirmation')
+                                <span class="error-message">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="role">I am a</label>
+                            <select id="role" name="role" class="form-input" required>
+                                <option value="">Select your role</option>
+                                <option value="tenant" {{ old('role') == 'tenant' ? 'selected' : '' }}>Tenant</option>
+                                <option value="landlord" {{ old('role') == 'landlord' ? 'selected' : '' }}>Landlord</option>
+                            </select>
+                            @error('role')
+                                <span class="error-message">{{ $message }}</span>
+                            @enderror
                         </div>
                         <button type="submit" class="form-submit">Create Account</button>
                         <div class="social-login">

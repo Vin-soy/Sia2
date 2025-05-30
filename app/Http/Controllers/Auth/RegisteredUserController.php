@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -33,6 +34,7 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'role' => ['required', 'string', 'in:tenant,landlord'],
         ]);
 
         $user = User::create([
@@ -41,10 +43,19 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        // Attach the selected role to the user
+        $role = Role::where('role_name', $request->role)->firstOrFail();
+        $user->roles()->attach($role->id);
+
         event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        // Redirect based on user role
+        if ($request->role === 'tenant') {
+            return redirect()->route('tenant.home');
+        } else {
+            return redirect()->route('landlord.home');
+        }
     }
 }

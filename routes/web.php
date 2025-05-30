@@ -65,7 +65,19 @@ Route::middleware(['auth', 'role:landlord'])->group(function () {
 // Authentication routes
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
-        return view('dashboard');
+        $user = auth()->user();
+        $roleName = $user->roles->pluck('role_name')->first();
+
+        switch ($roleName) {
+            case 'tenant':
+                return redirect()->route('tenant.home');
+            case 'landlord':
+                return redirect()->route('landlord.home');
+            case 'admin':
+                return redirect()->route('admin.home');
+            default:
+                return redirect()->route('home');
+        }
     })->middleware(['verified'])->name('dashboard');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

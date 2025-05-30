@@ -30,7 +30,7 @@
         <a href="{{ route('landlord.history') }}">
             <li>
                 <i class='bx bx-cart-alt'></i>
-                <p>History</p>
+                <p>Listings</p>
             </li>
         </a>
         
